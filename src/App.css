@@ -125,6 +125,45 @@
   transition: transform 920ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.canvas-shell .react-flow__node.is-animated-grid-motion {
+  transition:
+    transform 1200ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    opacity 240ms ease;
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-motion .playground-node {
+  scale: 1.5;
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-nonhover .playground-node {
+  scale: 0.9;
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-row-0 .playground-node {
+  animation: animated-grid-drop 620ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 0ms;
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-row-1 .playground-node {
+  animation: animated-grid-drop 620ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 90ms;
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-row-2 .playground-node {
+  animation: animated-grid-drop 620ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 180ms;
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-row-3 .playground-node {
+  animation: animated-grid-drop 620ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 270ms;
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-row-4 .playground-node {
+  animation: animated-grid-drop 620ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: 360ms;
+}
+
 .canvas-shell .react-flow__node.is-reshuffling-0 .playground-node,
 .canvas-shell .react-flow__node.is-reshuffling-1 .playground-node {
   animation: node-shake 760ms ease;
@@ -149,6 +188,28 @@
     0 0 0 8px rgba(79, 138, 87, 0.08);
 }
 
+.canvas-shell .react-flow__node.is-animated-grid-source .playground-node {
+  border-color: #4f8a57;
+  background: #dff2df;
+  scale: 1.5;
+  box-shadow:
+    0 16px 32px rgba(79, 138, 87, 0.22),
+    0 0 0 8px rgba(79, 138, 87, 0.08);
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-hover-source .playground-node {
+  border-color: #4f8a57;
+  background: #dff2df;
+  scale: 2;
+  box-shadow:
+    0 18px 36px rgba(79, 138, 87, 0.24),
+    0 0 0 10px rgba(79, 138, 87, 0.08);
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-copy .playground-node {
+  animation: animated-grid-hero-move 900ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
 .canvas-shell .react-flow__node.is-static-source-muted .playground-node {
   border-color: #90a694;
   background: #ebf1eb;
@@ -156,6 +217,26 @@
   box-shadow:
     0 12px 24px rgba(116, 130, 119, 0.16),
     0 0 0 6px rgba(144, 166, 148, 0.05);
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-source-muted .playground-node {
+  border-color: #90a694;
+  background: #ebf1eb;
+  scale: 0.9;
+  box-shadow:
+    0 10px 22px rgba(116, 130, 119, 0.14),
+    0 0 0 5px rgba(144, 166, 148, 0.04);
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-origin-muted .playground-node,
+.canvas-shell .react-flow__node.is-parked-start .playground-node {
+  border-color: #a2aaa2;
+  background: #eef1ed;
+  color: #6c736b;
+  scale: 1.5;
+  box-shadow:
+    0 10px 22px rgba(116, 130, 119, 0.12),
+    0 0 0 4px rgba(162, 170, 162, 0.04);
 }
 
 .edge-toggle {
@@ -219,10 +300,11 @@
   box-shadow: 0 10px 24px rgba(65, 56, 39, 0.08);
   text-align: center;
   transition:
-    background-color 220ms ease,
-    border-color 220ms ease,
-    box-shadow 220ms ease,
-    transform 220ms ease;
+    background-color 280ms ease,
+    border-color 280ms ease,
+    box-shadow 700ms ease,
+    transform 1200ms cubic-bezier(0.18, 1, 0.28, 1),
+    scale 1200ms cubic-bezier(0.18, 1, 0.28, 1);
 }
 
 .playground-node--center {
@@ -259,6 +341,24 @@
     0 0 0 8px rgba(123, 99, 179, 0.08);
 }
 
+.canvas-shell .react-flow__node.is-animated-grid-target .playground-node {
+  border-color: #7b63b3;
+  background: #eee6ff;
+  scale: 1.5;
+  box-shadow:
+    0 16px 32px rgba(123, 99, 179, 0.22),
+    0 0 0 8px rgba(123, 99, 179, 0.08);
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-hover-target .playground-node {
+  border-color: #7b63b3;
+  background: #eee6ff;
+  scale: 2;
+  box-shadow:
+    0 18px 36px rgba(123, 99, 179, 0.24),
+    0 0 0 10px rgba(123, 99, 179, 0.08);
+}
+
 .canvas-shell .react-flow__node.is-static-target-muted .playground-node {
   border-color: #a59abf;
   background: #f2eef8;
@@ -268,8 +368,25 @@
     0 0 0 6px rgba(165, 154, 191, 0.05);
 }
 
+.canvas-shell .react-flow__node.is-animated-grid-target-muted .playground-node {
+  border-color: #a59abf;
+  background: #f2eef8;
+  scale: 0.9;
+  box-shadow:
+    0 10px 22px rgba(133, 123, 156, 0.14),
+    0 0 0 5px rgba(165, 154, 191, 0.04);
+}
+
 .canvas-shell .react-flow__node.is-static-overlap-large .playground-node {
   transform: scale(1.18);
+}
+
+.canvas-shell .react-flow__node.is-animated-grid-overlap-large .playground-node {
+  scale: 2;
+}
+
+.canvas-shell .react-flow__node.is-no-handles .react-flow__handle {
+  display: none;
 }
 
 .playground-node .react-flow__handle {
@@ -304,6 +421,28 @@
 
   100% {
     transform: translateX(0);
+  }
+}
+
+@keyframes animated-grid-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-80px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes animated-grid-hero-move {
+  0% {
+    transform: translate(var(--hero-from-x, 0), var(--hero-from-y, 0)) scale(1);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(2);
   }
 }
 
