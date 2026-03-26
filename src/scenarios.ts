@@ -1,0 +1,287 @@
+import { MarkerType, type Edge, type Node } from 'reactflow'
+
+type PlaygroundData = {
+  label: string
+  tone?: 'center' | 'inner' | 'outer'
+}
+
+export type ScenarioId = 'auto-layout' | 'static'
+
+export type PlaygroundScenario = {
+  id: ScenarioId
+  shortLabel: string
+  label: string
+  description: string
+  nodes: Node<PlaygroundData>[]
+  edges: Edge[]
+}
+
+export const AUTO_LAYOUT_DEFAULT_CENTER_ID = 'a1'
+export const STATIC_DEFAULT_CENTER_ID = 's1'
+
+const dottedEdge = (id: string, source: string, target: string): Edge => ({
+  id,
+  source,
+  target,
+  type: 'smoothstep',
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    width: 16,
+    height: 16,
+    color: '#6f7670',
+  },
+  style: {
+    stroke: '#6f7670',
+    strokeWidth: 1.5,
+    strokeDasharray: '4 6',
+  },
+})
+
+const staticNodes: Node<PlaygroundData>[] = [
+  { id: 's1', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Start', tone: 'center' } },
+  { id: 's2', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Source A', tone: 'inner' } },
+  { id: 's3', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Source B', tone: 'inner' } },
+  { id: 's4', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Source C', tone: 'inner' } },
+  { id: 's5', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Parse', tone: 'outer' } },
+  { id: 's6', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Validate', tone: 'outer' } },
+  { id: 's7', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Transform', tone: 'outer' } },
+  { id: 's8', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Review', tone: 'outer' } },
+  { id: 's9', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Queue', tone: 'outer' } },
+  { id: 's10', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Decide', tone: 'outer' } },
+  { id: 's11', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Revise', tone: 'outer' } },
+  { id: 's12', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Approve', tone: 'outer' } },
+  { id: 's13', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Reject', tone: 'outer' } },
+  { id: 's14', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Archive', tone: 'outer' } },
+  { id: 's15', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Notify', tone: 'outer' } },
+]
+
+const staticEdges: Edge[] = [
+  dottedEdge('se-1', 's1', 's2'),
+  dottedEdge('se-2', 's1', 's3'),
+  dottedEdge('se-3', 's1', 's4'),
+  dottedEdge('se-4', 's2', 's5'),
+  dottedEdge('se-5', 's3', 's6'),
+  dottedEdge('se-6', 's4', 's8'),
+  dottedEdge('se-7', 's2', 's7'),
+  dottedEdge('se-8', 's5', 's9'),
+  dottedEdge('se-9', 's6', 's10'),
+  dottedEdge('se-10', 's7', 's10'),
+  dottedEdge('se-11', 's8', 's11'),
+  dottedEdge('se-12', 's9', 's12'),
+  dottedEdge('se-13', 's10', 's12'),
+  dottedEdge('se-14', 's10', 's13'),
+  dottedEdge('se-15', 's11', 's14'),
+  dottedEdge('se-16', 's12', 's15'),
+  dottedEdge('se-17', 's13', 's15'),
+  dottedEdge('se-18', 's14', 's15'),
+  dottedEdge('se-19', 's11', 's6'),
+  dottedEdge('se-20', 's13', 's8'),
+  dottedEdge('se-21', 's9', 's7'),
+  dottedEdge('se-22', 's14', 's10'),
+]
+
+const autoLayoutBaseNodes: Node<PlaygroundData>[] = [
+  { id: 'a1', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Intake', tone: 'center' } },
+  { id: 'a2', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Profile', tone: 'inner' } },
+  { id: 'a3', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Rules', tone: 'inner' } },
+  { id: 'a4', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Context', tone: 'inner' } },
+  { id: 'a5', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Normalize', tone: 'outer' } },
+  { id: 'a6', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Rank', tone: 'outer' } },
+  { id: 'a7', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Merge', tone: 'outer' } },
+  { id: 'a8', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Check', tone: 'outer' } },
+  { id: 'a9', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Plan', tone: 'outer' } },
+  { id: 'a10', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Draft', tone: 'outer' } },
+  { id: 'a11', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Review', tone: 'outer' } },
+  { id: 'a12', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Retry', tone: 'outer' } },
+  { id: 'a13', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Approve', tone: 'outer' } },
+  { id: 'a14', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Publish', tone: 'outer' } },
+  { id: 'a15', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Report', tone: 'outer' } },
+]
+
+const autoLayoutEdges: Edge[] = [
+  dottedEdge('ae-1', 'a1', 'a2'),
+  dottedEdge('ae-2', 'a1', 'a3'),
+  dottedEdge('ae-3', 'a1', 'a4'),
+  dottedEdge('ae-4', 'a2', 'a5'),
+  dottedEdge('ae-5', 'a3', 'a5'),
+  dottedEdge('ae-6', 'a4', 'a6'),
+  dottedEdge('ae-7', 'a5', 'a7'),
+  dottedEdge('ae-8', 'a6', 'a7'),
+  dottedEdge('ae-9', 'a7', 'a8'),
+  dottedEdge('ae-10', 'a7', 'a9'),
+  dottedEdge('ae-11', 'a8', 'a10'),
+  dottedEdge('ae-12', 'a9', 'a10'),
+  dottedEdge('ae-13', 'a10', 'a11'),
+  dottedEdge('ae-14', 'a11', 'a13'),
+  dottedEdge('ae-15', 'a11', 'a12'),
+  dottedEdge('ae-16', 'a12', 'a9'),
+  dottedEdge('ae-17', 'a13', 'a14'),
+  dottedEdge('ae-18', 'a14', 'a15'),
+  dottedEdge('ae-19', 'a6', 'a8'),
+  dottedEdge('ae-20', 'a5', 'a9'),
+  dottedEdge('ae-21', 'a3', 'a6'),
+  dottedEdge('ae-22', 'a13', 'a10'),
+]
+
+const AUTO_LAYOUT_NODE_WIDTH = 160
+const AUTO_LAYOUT_NODE_HEIGHT = 52
+
+function placeOnCircle(
+  nodes: Node<PlaygroundData>[],
+  centerX: number,
+  centerY: number,
+  radius: number,
+  startAngle: number,
+) {
+  if (nodes.length === 0) {
+    return []
+  }
+
+  return nodes.map((node, index) => {
+    const angle = startAngle + (Math.PI * 2 * index) / nodes.length
+
+    return {
+      ...node,
+      position: {
+        x:
+          centerX + Math.cos(angle) * radius - AUTO_LAYOUT_NODE_WIDTH / 2,
+        y:
+          centerY + Math.sin(angle) * radius - AUTO_LAYOUT_NODE_HEIGHT / 2,
+      },
+    }
+  })
+}
+
+function buildConcentricLayout(
+  nodes: Node<PlaygroundData>[],
+  edges: Edge[],
+  centerNodeId: string,
+  tension: number,
+  animationVersion = 0,
+) {
+  const clampedTension = Math.min(1, Math.max(-1, tension))
+  const centerNode = nodes.find((node) => node.id === centerNodeId) ?? nodes[0]
+  const innerNeighborIds = new Set(
+    edges.filter((edge) => edge.source === centerNode.id).map((edge) => edge.target),
+  )
+
+  const centerX = 720
+  const centerY = 420
+  const innerRadius = 220 + clampedTension * 140
+  const outerRadius = innerRadius + 230 + clampedTension * 180
+  const reshuffleClass =
+    animationVersion > 0 ? `is-reshuffling-${animationVersion % 2}` : undefined
+
+  const innerRingNodes = nodes.filter((node) => innerNeighborIds.has(node.id))
+  const outerRingNodes = nodes.filter(
+    (node) => node.id !== centerNode.id && !innerNeighborIds.has(node.id),
+  )
+
+  return [
+    {
+      ...centerNode,
+      className: reshuffleClass,
+      data: {
+        ...centerNode.data,
+        tone: 'center' as const,
+      },
+      position: {
+        x: centerX - AUTO_LAYOUT_NODE_WIDTH / 2,
+        y: centerY - AUTO_LAYOUT_NODE_HEIGHT / 2,
+      },
+    },
+    ...placeOnCircle(
+      innerRingNodes.map((node) => ({
+        ...node,
+        className: reshuffleClass,
+        data: {
+          ...node.data,
+          tone: 'inner' as const,
+        },
+      })),
+      centerX,
+      centerY,
+      innerRadius,
+      -Math.PI / 2,
+    ),
+    ...placeOnCircle(
+      outerRingNodes.map((node) => ({
+        ...node,
+        className: reshuffleClass,
+        data: {
+          ...node.data,
+          tone: 'outer' as const,
+        },
+      })),
+      centerX,
+      centerY,
+      outerRadius,
+      -Math.PI / 2 + Math.PI / outerRingNodes.length,
+    ),
+  ]
+}
+
+export function getAutoLayoutScenario(
+  tension = 0.5,
+  centerNodeId = AUTO_LAYOUT_DEFAULT_CENTER_ID,
+  animationVersion = 0,
+): PlaygroundScenario {
+  return {
+    id: 'auto-layout',
+    shortLabel: 'Auto Layout',
+    label: 'Auto Layout Flow',
+    description:
+      'Click any node to promote it to the center. Its direct outgoing targets become the inner ring, and all remaining nodes move to the outer ring.',
+    nodes: buildConcentricLayout(
+      autoLayoutBaseNodes,
+      autoLayoutEdges,
+      centerNodeId,
+      tension,
+      animationVersion,
+    ),
+    edges: autoLayoutEdges,
+  }
+}
+
+export function getStaticScenario(
+  tension = 0,
+  selectedNodeId = STATIC_DEFAULT_CENTER_ID,
+): PlaygroundScenario {
+  const positionedNodes = buildConcentricLayout(
+    staticNodes,
+    staticEdges,
+    STATIC_DEFAULT_CENTER_ID,
+    tension,
+  )
+  const connectedNodeIds = new Set(
+    staticEdges
+      .filter((edge) => edge.source === selectedNodeId)
+      .map((edge) => edge.target),
+  )
+
+  return {
+    id: 'static',
+    shortLabel: 'Static',
+    label: 'Static Flow',
+    description:
+      'The static flow starts from the same concentric grouping as auto layout, but its interaction model stays separate.',
+    nodes: positionedNodes.map((node) => ({
+      ...node,
+      data: {
+        ...node.data,
+        tone:
+          node.id === selectedNodeId
+            ? 'center'
+            : connectedNodeIds.has(node.id)
+              ? 'inner'
+              : 'outer',
+      },
+    })),
+    edges: staticEdges,
+  }
+}
+
+export const scenarios: PlaygroundScenario[] = [
+  getAutoLayoutScenario(),
+  getStaticScenario(),
+]

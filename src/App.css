@@ -1,0 +1,376 @@
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at top left, rgba(203, 237, 194, 0.9), transparent 30%),
+    radial-gradient(circle at top right, rgba(255, 216, 179, 0.8), transparent 24%),
+    linear-gradient(180deg, #f4efe5 0%, #ebe3d3 100%);
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  align-items: end;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.74rem;
+  color: #55654f;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.95;
+}
+
+.scenario-description {
+  margin: 0.65rem 0 0;
+  max-width: 36rem;
+  color: #475348;
+}
+
+.scenario-switch {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.scenario-switch button {
+  border: 1px solid rgba(49, 58, 52, 0.16);
+  background: rgba(255, 252, 246, 0.82);
+  color: #263026;
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.scenario-switch button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(49, 58, 52, 0.28);
+}
+
+.scenario-switch button.is-active {
+  background: #263026;
+  color: #f7f3eb;
+  border-color: #263026;
+}
+
+.canvas-shell {
+  flex: 1 1 auto;
+  display: flex;
+  width: calc(100% - 3rem);
+  height: calc(100vh - 15rem);
+  min-height: 560px;
+  margin: 0 1.5rem 1.5rem;
+  border: 1px solid rgba(49, 58, 52, 0.12);
+  border-radius: 1.75rem;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(76, 69, 54, 0.14);
+  backdrop-filter: blur(10px);
+}
+
+.canvas-shell > * {
+  flex: 1 1 auto;
+}
+
+.layout-controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  padding: 0 1.5rem 1rem;
+}
+
+.tension-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(49, 58, 52, 0.12);
+  background: rgba(255, 252, 246, 0.82);
+  color: #314131;
+}
+
+.tension-control span,
+.tension-control strong {
+  font-size: 0.9rem;
+}
+
+.tension-control input {
+  width: min(260px, 40vw);
+}
+
+.canvas-shell .react-flow {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 252, 246, 0.54);
+}
+
+.canvas-shell .react-flow__node {
+  transition: transform 920ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.canvas-shell .react-flow__node.is-reshuffling-0 .playground-node,
+.canvas-shell .react-flow__node.is-reshuffling-1 .playground-node {
+  animation: node-shake 760ms ease;
+}
+
+.canvas-shell .react-flow__node.is-hover-source .playground-node {
+  border-color: #d38b32;
+  background: #fff0d9;
+  transform: scale(1.04);
+  box-shadow:
+    0 16px 32px rgba(211, 139, 50, 0.22),
+    0 0 0 8px rgba(211, 139, 50, 0.08);
+  animation: hover-breathe-source 700ms ease-out 1;
+}
+
+.canvas-shell .react-flow__node.is-static-source .playground-node {
+  border-color: #4f8a57;
+  background: #dff2df;
+  transform: scale(1.18);
+  box-shadow:
+    0 16px 32px rgba(79, 138, 87, 0.22),
+    0 0 0 8px rgba(79, 138, 87, 0.08);
+}
+
+.canvas-shell .react-flow__node.is-static-source-muted .playground-node {
+  border-color: #90a694;
+  background: #ebf1eb;
+  transform: scale(1.18);
+  box-shadow:
+    0 12px 24px rgba(116, 130, 119, 0.16),
+    0 0 0 6px rgba(144, 166, 148, 0.05);
+}
+
+.edge-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(49, 58, 52, 0.12);
+  background: rgba(255, 252, 246, 0.82);
+  color: #314131;
+}
+
+.edge-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.edge-toggle__track {
+  width: 2.7rem;
+  height: 1.55rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.16rem;
+  border-radius: 999px;
+  background: #d3d8d0;
+  transition: background-color 180ms ease;
+}
+
+.edge-toggle__thumb {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 999px;
+  background: #fffdf7;
+  box-shadow: 0 2px 6px rgba(48, 54, 45, 0.18);
+  transition: transform 180ms ease;
+}
+
+.edge-toggle button.is-active .edge-toggle__track {
+  background: #4f8a57;
+}
+
+.edge-toggle button.is-active .edge-toggle__thumb {
+  transform: translateX(1.1rem);
+}
+
+.playground-node {
+  width: 160px;
+  min-height: 52px;
+  padding: 0.9rem 1.1rem;
+  border-radius: 16px;
+  border: 1px solid #7d867d;
+  background: rgba(255, 252, 246, 0.96);
+  color: #243024;
+  box-shadow: 0 10px 24px rgba(65, 56, 39, 0.08);
+  text-align: center;
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.playground-node--center {
+  border-color: #4f8a57;
+  background: #dff2df;
+}
+
+.playground-node--inner {
+  border-color: #7b63b3;
+  background: #eee6ff;
+}
+
+.playground-node--outer {
+  border-color: #7d867d;
+  background: rgba(255, 252, 246, 0.96);
+}
+
+.canvas-shell .react-flow__node.is-hover-target .playground-node {
+  border-color: #4f87d9;
+  background: #e4f0ff;
+  transform: scale(1.035);
+  box-shadow:
+    0 16px 32px rgba(79, 135, 217, 0.24),
+    0 0 0 8px rgba(79, 135, 217, 0.08);
+  animation: hover-breathe-target 700ms ease-out 1;
+}
+
+.canvas-shell .react-flow__node.is-static-target .playground-node {
+  border-color: #7b63b3;
+  background: #eee6ff;
+  transform: scale(1.12);
+  box-shadow:
+    0 16px 32px rgba(123, 99, 179, 0.22),
+    0 0 0 8px rgba(123, 99, 179, 0.08);
+}
+
+.canvas-shell .react-flow__node.is-static-target-muted .playground-node {
+  border-color: #a59abf;
+  background: #f2eef8;
+  transform: scale(1.12);
+  box-shadow:
+    0 12px 24px rgba(133, 123, 156, 0.16),
+    0 0 0 6px rgba(165, 154, 191, 0.05);
+}
+
+.canvas-shell .react-flow__node.is-static-overlap-large .playground-node {
+  transform: scale(1.18);
+}
+
+.playground-node .react-flow__handle {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fffaf2;
+  background: #5d655e;
+}
+
+.playground-node__label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+@keyframes node-shake {
+  0% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-3px) rotate(-1deg);
+  }
+
+  45% {
+    transform: translateX(4px) rotate(1deg);
+  }
+
+  70% {
+    transform: translateX(-2px) rotate(-0.5deg);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes hover-breathe-source {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 14px 28px rgba(211, 139, 50, 0.2);
+  }
+
+  100% {
+    transform: scale(1.04);
+    box-shadow:
+      0 16px 32px rgba(211, 139, 50, 0.22),
+      0 0 0 8px rgba(211, 139, 50, 0.08);
+  }
+}
+
+@keyframes hover-breathe-target {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 14px 28px rgba(79, 135, 217, 0.22);
+  }
+
+  100% {
+    transform: scale(1.035);
+    box-shadow:
+      0 16px 32px rgba(79, 135, 217, 0.24),
+      0 0 0 8px rgba(79, 135, 217, 0.08);
+  }
+}
+
+@media (max-width: 820px) {
+  .app-header {
+    grid-template-columns: 1fr;
+    display: grid;
+    align-items: start;
+  }
+
+  .scenario-switch {
+    justify-content: start;
+  }
+
+  .canvas-shell {
+    width: calc(100% - 2rem);
+    height: calc(100vh - 17rem);
+    margin: 0 1rem 1rem;
+    border-radius: 1.25rem;
+  }
+
+  .layout-controls {
+    padding: 0 1rem 1rem;
+  }
+
+  .tension-control {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .edge-toggle {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 1rem;
+  }
+
+  .tension-control input {
+    width: 100%;
+  }
+}
