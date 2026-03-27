@@ -5,7 +5,12 @@ type PlaygroundData = {
   tone?: 'center' | 'inner' | 'outer'
 }
 
-export type ScenarioId = 'auto-layout' | 'static' | 'grid' | 'animated-grid'
+export type ScenarioId =
+  | 'auto-layout'
+  | 'static'
+  | 'grid'
+  | 'animated-grid'
+  | 'hexagonal'
 
 export type PlaygroundScenario = {
   id: ScenarioId
@@ -20,6 +25,7 @@ export const AUTO_LAYOUT_DEFAULT_CENTER_ID = 'a1'
 export const STATIC_DEFAULT_CENTER_ID = 's1'
 export const GRID_DEFAULT_CENTER_ID = 'g1'
 export const ANIMATED_GRID_DEFAULT_CENTER_ID = 'ag1'
+export const HEXAGONAL_DEFAULT_CENTER_ID = 'h1'
 
 const dottedEdge = (id: string, source: string, target: string): Edge => ({
   id,
@@ -166,6 +172,49 @@ const animatedGridEdges: Edge[] = [
   dottedEdge('age-20', 'ag13', 'ag8'),
   dottedEdge('age-21', 'ag9', 'ag7'),
   dottedEdge('age-22', 'ag14', 'ag10'),
+]
+
+const hexagonalNodes: Node<PlaygroundData>[] = [
+  { id: 'h1', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Start', tone: 'center' } },
+  { id: 'h2', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Source A', tone: 'inner' } },
+  { id: 'h3', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Source B', tone: 'inner' } },
+  { id: 'h4', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Source C', tone: 'inner' } },
+  { id: 'h5', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Parse', tone: 'outer' } },
+  { id: 'h6', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Validate', tone: 'outer' } },
+  { id: 'h7', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Transform', tone: 'outer' } },
+  { id: 'h8', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Review', tone: 'outer' } },
+  { id: 'h9', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Queue', tone: 'outer' } },
+  { id: 'h10', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Decide', tone: 'outer' } },
+  { id: 'h11', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Revise', tone: 'outer' } },
+  { id: 'h12', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Approve', tone: 'outer' } },
+  { id: 'h13', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Reject', tone: 'outer' } },
+  { id: 'h14', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Archive', tone: 'outer' } },
+  { id: 'h15', type: 'playground', position: { x: 0, y: 0 }, data: { label: 'Notify', tone: 'outer' } },
+]
+
+const hexagonalEdges: Edge[] = [
+  dottedEdge('he-1', 'h1', 'h2'),
+  dottedEdge('he-2', 'h1', 'h3'),
+  dottedEdge('he-3', 'h1', 'h4'),
+  dottedEdge('he-4', 'h2', 'h5'),
+  dottedEdge('he-5', 'h3', 'h6'),
+  dottedEdge('he-6', 'h4', 'h8'),
+  dottedEdge('he-7', 'h2', 'h7'),
+  dottedEdge('he-8', 'h5', 'h9'),
+  dottedEdge('he-9', 'h6', 'h10'),
+  dottedEdge('he-10', 'h7', 'h10'),
+  dottedEdge('he-11', 'h8', 'h11'),
+  dottedEdge('he-12', 'h9', 'h12'),
+  dottedEdge('he-13', 'h10', 'h12'),
+  dottedEdge('he-14', 'h10', 'h13'),
+  dottedEdge('he-15', 'h11', 'h14'),
+  dottedEdge('he-16', 'h12', 'h15'),
+  dottedEdge('he-17', 'h13', 'h15'),
+  dottedEdge('he-18', 'h14', 'h15'),
+  dottedEdge('he-19', 'h11', 'h6'),
+  dottedEdge('he-20', 'h13', 'h8'),
+  dottedEdge('he-21', 'h9', 'h7'),
+  dottedEdge('he-22', 'h14', 'h10'),
 ]
 
 const autoLayoutBaseNodes: Node<PlaygroundData>[] = [
@@ -352,6 +401,122 @@ function buildGridLayout(
   ]
 }
 
+function buildHexagonalLayout(
+  nodes: Node<PlaygroundData>[],
+  topNodeId: string,
+  tension: number,
+  expanded = false,
+) {
+  const clampedTension = Math.min(1, Math.max(-1, tension))
+  const topNode = nodes.find((node) => node.id === topNodeId) ?? nodes[0]
+  const remainderNodes = nodes.filter((node) => node.id !== topNode.id)
+  const centerX = 720
+  const topY = 140
+  const columnGap = expanded ? 290 + clampedTension * 90 : 210 + clampedTension * 60
+  const rowGap = expanded ? 200 + clampedTension * 60 : 135 + clampedTension * 40
+  const columns = 4
+
+  return [
+    {
+      ...topNode,
+      className: expanded ? 'is-animated-grid-row-0' : undefined,
+      position: {
+        x: centerX - AUTO_LAYOUT_NODE_WIDTH / 2,
+        y: topY,
+      },
+    },
+    ...remainderNodes.map((node, index) => {
+      const row = Math.floor(index / columns)
+      const column = index % columns
+      const rowWidth = Math.min(columns, remainderNodes.length - row * columns)
+      const rowOffset = ((rowWidth - 1) * columnGap) / 2
+      const staggerOffset = row % 2 === 0 ? 0 : columnGap / 2
+
+      return {
+        ...node,
+        className: expanded ? `is-animated-grid-row-${row + 1}` : undefined,
+        position: {
+          x:
+            centerX -
+            rowOffset +
+            column * columnGap +
+            staggerOffset -
+            AUTO_LAYOUT_NODE_WIDTH / 2,
+          y: topY + 190 + row * rowGap,
+        },
+      }
+    }),
+  ]
+}
+
+function buildPromotedLayoutScenario(
+  id: Extract<ScenarioId, 'animated-grid' | 'hexagonal'>,
+  shortLabel: string,
+  label: string,
+  description: string,
+  nodes: Node<PlaygroundData>[],
+  edges: Edge[],
+  topNodeId: string,
+  selectedNodeId: string,
+  baseLayout: Node<PlaygroundData>[],
+): PlaygroundScenario {
+  const heroPosition = { x: 720 - AUTO_LAYOUT_NODE_WIDTH / 2, y: 140 }
+  const parkedStartPosition = { x: 1120, y: 40 }
+  const connectedNodeIds = new Set(
+    edges.filter((edge) => edge.source === selectedNodeId).map((edge) => edge.target),
+  )
+  const baseLayoutById = new Map(baseLayout.map((node) => [node.id, node]))
+
+  const positionedNodes = nodes.map((node) => {
+    if (node.id === selectedNodeId) {
+      return {
+        ...node,
+        position: heroPosition,
+        className: 'is-animated-grid-motion is-animated-grid-row-0',
+        data: {
+          ...node.data,
+          tone: 'center' as const,
+        },
+      }
+    }
+
+    if (node.id === topNodeId && selectedNodeId !== topNodeId) {
+      return {
+        ...node,
+        position: parkedStartPosition,
+        className: 'is-animated-grid-motion is-parked-start',
+        data: {
+          ...node.data,
+          tone: 'outer' as const,
+        },
+      }
+    }
+
+    const layoutNode = baseLayoutById.get(node.id)
+
+    return {
+      ...node,
+      position: layoutNode?.position ?? node.position,
+      className: ['is-animated-grid-motion', layoutNode?.className]
+        .filter(Boolean)
+        .join(' '),
+      data: {
+        ...node.data,
+        tone: connectedNodeIds.has(node.id) ? ('inner' as const) : ('outer' as const),
+      },
+    }
+  })
+
+  return {
+    id,
+    shortLabel,
+    label,
+    description,
+    nodes: positionedNodes,
+    edges,
+  }
+}
+
 export function getAutoLayoutScenario(
   tension = 0.5,
   centerNodeId = AUTO_LAYOUT_DEFAULT_CENTER_ID,
@@ -449,64 +614,34 @@ export function getAnimatedGridScenario(
   tension = 0,
   selectedNodeId = ANIMATED_GRID_DEFAULT_CENTER_ID,
 ): PlaygroundScenario {
-  const topNodeId = ANIMATED_GRID_DEFAULT_CENTER_ID
-  const heroPosition = { x: 720 - AUTO_LAYOUT_NODE_WIDTH / 2, y: 140 }
-  const parkedStartPosition = { x: 1120, y: 40 }
-  const connectedNodeIds = new Set(
-    animatedGridEdges
-      .filter((edge) => edge.source === selectedNodeId)
-      .map((edge) => edge.target),
+  return buildPromotedLayoutScenario(
+    'animated-grid',
+    'Animated Grid',
+    'Animated Grid Flow',
+    'Grid layout with the same hover and click behavior as Grid, but the selected node moves into a hero slot while the previous hero node returns to its body position.',
+    animatedGridNodes,
+    animatedGridEdges,
+    ANIMATED_GRID_DEFAULT_CENTER_ID,
+    selectedNodeId,
+    buildGridLayout(animatedGridNodes, ANIMATED_GRID_DEFAULT_CENTER_ID, tension, true),
   )
-  const baseLayout = buildGridLayout(animatedGridNodes, topNodeId, tension, true)
-  const baseLayoutById = new Map(baseLayout.map((node) => [node.id, node]))
+}
 
-  const positionedNodes = animatedGridNodes.map((node) => {
-    if (node.id === selectedNodeId) {
-      return {
-        ...node,
-        position: heroPosition,
-        className: 'is-animated-grid-motion is-animated-grid-row-0',
-        data: {
-          ...node.data,
-          tone: 'center' as const,
-        },
-      }
-    }
-
-    if (node.id === topNodeId && selectedNodeId !== topNodeId) {
-      return {
-        ...node,
-        position: parkedStartPosition,
-        className: 'is-animated-grid-motion is-parked-start',
-        data: {
-          ...node.data,
-          tone: 'outer' as const,
-        },
-      }
-    }
-
-    const layoutNode = baseLayoutById.get(node.id)
-
-    return {
-      ...node,
-      position: layoutNode?.position ?? node.position,
-      className: layoutNode?.className,
-      data: {
-        ...node.data,
-        tone: connectedNodeIds.has(node.id) ? ('inner' as const) : ('outer' as const),
-      },
-    }
-  })
-
-  return {
-    id: 'animated-grid',
-    shortLabel: 'Animated Grid',
-    label: 'Animated Grid Flow',
-    description:
-      'Grid layout with the same hover and click behavior as Grid, but the selected node moves into a hero slot while the previous hero node returns to its body position.',
-    nodes: positionedNodes,
-    edges: animatedGridEdges,
-  }
+export function getHexagonalScenario(
+  tension = 0,
+  selectedNodeId = HEXAGONAL_DEFAULT_CENTER_ID,
+): PlaygroundScenario {
+  return buildPromotedLayoutScenario(
+    'hexagonal',
+    'Hexagonal',
+    'Hexagonal Flow',
+    'Hexagonal layout with the same hover and click behavior as Animated Grid, using a staggered honeycomb-like body layout.',
+    hexagonalNodes,
+    hexagonalEdges,
+    HEXAGONAL_DEFAULT_CENTER_ID,
+    selectedNodeId,
+    buildHexagonalLayout(hexagonalNodes, HEXAGONAL_DEFAULT_CENTER_ID, tension, true),
+  )
 }
 
 export const scenarios: PlaygroundScenario[] = [
@@ -514,4 +649,5 @@ export const scenarios: PlaygroundScenario[] = [
   getStaticScenario(),
   getGridScenario(),
   getAnimatedGridScenario(),
+  getHexagonalScenario(),
 ]

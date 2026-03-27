@@ -20,8 +20,10 @@ import {
   getAutoLayoutScenario,
   getAnimatedGridScenario,
   getGridScenario,
+  getHexagonalScenario,
   getStaticScenario,
   GRID_DEFAULT_CENTER_ID,
+  HEXAGONAL_DEFAULT_CENTER_ID,
   scenarios,
   STATIC_DEFAULT_CENTER_ID,
   type PlaygroundScenario,
@@ -52,6 +54,7 @@ function getScenarioForState(
   staticSelectedNodeId: string,
   gridSelectedNodeId: string,
   animatedGridSelectedNodeId: string,
+  hexagonalSelectedNodeId: string,
 ): PlaygroundScenario {
   if (scenarioId === 'auto-layout') {
     return getAutoLayoutScenario(tension, centerNodeId, animationVersion)
@@ -69,6 +72,10 @@ function getScenarioForState(
     return getAnimatedGridScenario(tension, animatedGridSelectedNodeId)
   }
 
+  if (scenarioId === 'hexagonal') {
+    return getHexagonalScenario(tension, hexagonalSelectedNodeId)
+  }
+
   return scenarios[0]
 }
 
@@ -78,6 +85,7 @@ type FlowCanvasProps = {
   staticSelectedNodeId: string
   gridSelectedNodeId: string
   animatedGridSelectedNodeId: string
+  hexagonalSelectedNodeId: string
   onNodeClick?: NodeMouseHandler
 }
 
@@ -109,6 +117,7 @@ function FlowCanvas({
   staticSelectedNodeId,
   gridSelectedNodeId,
   animatedGridSelectedNodeId,
+  hexagonalSelectedNodeId,
   onNodeClick,
 }: FlowCanvasProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState(cloneNodes(scenario.nodes))
@@ -177,13 +186,16 @@ function FlowCanvas({
         ? hoveredNodeId ?? gridSelectedNodeId
         : scenario.id === 'animated-grid'
           ? hoveredNodeId ?? animatedGridSelectedNodeId
+          : scenario.id === 'hexagonal'
+            ? hoveredNodeId ?? hexagonalSelectedNodeId
         : null
 
   const staticSelectedTargetIds = useMemo(() => {
     if (
       scenario.id !== 'static' &&
       scenario.id !== 'grid' &&
-      scenario.id !== 'animated-grid'
+      scenario.id !== 'animated-grid' &&
+      scenario.id !== 'hexagonal'
     ) {
       return new Set<string>()
     }
@@ -193,7 +205,9 @@ function FlowCanvas({
         ? staticSelectedNodeId
         : scenario.id === 'grid'
           ? gridSelectedNodeId
-          : animatedGridSelectedNodeId
+          : scenario.id === 'animated-grid'
+            ? animatedGridSelectedNodeId
+            : hexagonalSelectedNodeId
 
     return new Set(
       edges
@@ -204,13 +218,16 @@ function FlowCanvas({
     animatedGridSelectedNodeId,
     edges,
     gridSelectedNodeId,
+    hexagonalSelectedNodeId,
     scenario.id,
     staticSelectedNodeId,
   ])
 
   const hoverTargetIds = useMemo(() => {
     const sourceNodeId =
-      scenario.id === 'static' || scenario.id === 'animated-grid'
+      scenario.id === 'static' ||
+      scenario.id === 'animated-grid' ||
+      scenario.id === 'hexagonal'
         ? activeStaticNodeId
         : hoveredNodeId
 
@@ -229,7 +246,7 @@ function FlowCanvas({
         ...node,
         className: [
           node.className,
-          scenario.id === 'animated-grid' &&
+          (scenario.id === 'animated-grid' || scenario.id === 'hexagonal') &&
           hoveredNodeId &&
           node.id !== hoveredNodeId &&
           !hoverTargetIds.has(node.id)
@@ -237,35 +254,39 @@ function FlowCanvas({
             : null,
           (scenario.id === 'static' ||
             scenario.id === 'grid' ||
-            scenario.id === 'animated-grid') &&
+            scenario.id === 'animated-grid' ||
+            scenario.id === 'hexagonal') &&
           hoveredNodeId &&
           node.id ===
             (scenario.id === 'static'
               ? staticSelectedNodeId
               : scenario.id === 'grid'
                 ? gridSelectedNodeId
-                : animatedGridSelectedNodeId) &&
+                : scenario.id === 'animated-grid'
+                  ? animatedGridSelectedNodeId
+                  : hexagonalSelectedNodeId) &&
           node.id !== hoveredNodeId &&
           !hoverTargetIds.has(node.id)
-            ? scenario.id === 'animated-grid'
+            ? scenario.id === 'animated-grid' || scenario.id === 'hexagonal'
               ? 'is-animated-grid-source-muted'
               : 'is-static-source-muted'
             : null,
           (scenario.id === 'static' ||
             scenario.id === 'grid' ||
-            scenario.id === 'animated-grid') &&
+            scenario.id === 'animated-grid' ||
+            scenario.id === 'hexagonal') &&
           hoveredNodeId &&
           staticSelectedTargetIds.has(node.id) &&
           node.id !== hoveredNodeId &&
           !hoverTargetIds.has(node.id)
-            ? scenario.id === 'animated-grid'
+            ? scenario.id === 'animated-grid' || scenario.id === 'hexagonal'
               ? 'is-animated-grid-target-muted'
               : 'is-static-target-muted'
             : null,
           node.id === hoveredNodeId
             ? scenario.id === 'static' || scenario.id === 'grid'
               ? 'is-static-source'
-              : scenario.id === 'animated-grid'
+              : scenario.id === 'animated-grid' || scenario.id === 'hexagonal'
                 ? 'is-animated-grid-hover-source'
               : 'is-hover-source'
             : null,
@@ -276,16 +297,19 @@ function FlowCanvas({
             (scenario.id === 'grid' && node.id === gridSelectedNodeId && !hoveredNodeId) ||
             (scenario.id === 'animated-grid' &&
               node.id === animatedGridSelectedNodeId &&
+              !hoveredNodeId) ||
+            (scenario.id === 'hexagonal' &&
+              node.id === hexagonalSelectedNodeId &&
               !hoveredNodeId)
           )
-            ? scenario.id === 'animated-grid'
+            ? scenario.id === 'animated-grid' || scenario.id === 'hexagonal'
               ? 'is-animated-grid-source'
               : 'is-static-source'
             : null,
           hoverTargetIds.has(node.id)
             ? scenario.id === 'static' || scenario.id === 'grid'
               ? 'is-static-target'
-              : scenario.id === 'animated-grid'
+              : scenario.id === 'animated-grid' || scenario.id === 'hexagonal'
                 ? hoveredNodeId
                   ? 'is-animated-grid-hover-target'
                   : 'is-animated-grid-target'
@@ -293,7 +317,8 @@ function FlowCanvas({
             : null,
           (scenario.id === 'static' ||
             scenario.id === 'grid' ||
-            scenario.id === 'animated-grid') &&
+            scenario.id === 'animated-grid' ||
+            scenario.id === 'hexagonal') &&
           hoveredNodeId &&
           (
             node.id ===
@@ -301,11 +326,13 @@ function FlowCanvas({
                 ? staticSelectedNodeId
                 : scenario.id === 'grid'
                   ? gridSelectedNodeId
-                  : animatedGridSelectedNodeId) ||
+                  : scenario.id === 'animated-grid'
+                    ? animatedGridSelectedNodeId
+                    : hexagonalSelectedNodeId) ||
             staticSelectedTargetIds.has(node.id)
           ) &&
           (node.id === hoveredNodeId || hoverTargetIds.has(node.id))
-            ? scenario.id === 'animated-grid'
+            ? scenario.id === 'animated-grid' || scenario.id === 'hexagonal'
               ? 'is-animated-grid-overlap-large'
               : 'is-static-overlap-large'
             : null,
@@ -320,6 +347,7 @@ function FlowCanvas({
       scenario.id,
       gridSelectedNodeId,
       animatedGridSelectedNodeId,
+      hexagonalSelectedNodeId,
       staticSelectedNodeId,
       staticSelectedTargetIds,
     ],
@@ -398,6 +426,9 @@ function App() {
   const [animatedGridSelectedNodeId, setAnimatedGridSelectedNodeId] = useState(
     ANIMATED_GRID_DEFAULT_CENTER_ID,
   )
+  const [hexagonalSelectedNodeId, setHexagonalSelectedNodeId] = useState(
+    HEXAGONAL_DEFAULT_CENTER_ID,
+  )
   const selectedScenario = useMemo(
     () =>
       getScenarioForState(
@@ -408,6 +439,7 @@ function App() {
         staticSelectedNodeId,
         gridSelectedNodeId,
         animatedGridSelectedNodeId,
+        hexagonalSelectedNodeId,
       ),
     [
       scenarioId,
@@ -417,6 +449,7 @@ function App() {
       staticSelectedNodeId,
       gridSelectedNodeId,
       animatedGridSelectedNodeId,
+      hexagonalSelectedNodeId,
     ],
   )
 
@@ -438,6 +471,10 @@ function App() {
 
     if (nextScenarioId === 'animated-grid') {
       setAnimatedGridSelectedNodeId(ANIMATED_GRID_DEFAULT_CENTER_ID)
+    }
+
+    if (nextScenarioId === 'hexagonal') {
+      setHexagonalSelectedNodeId(HEXAGONAL_DEFAULT_CENTER_ID)
     }
   }
 
@@ -474,6 +511,14 @@ function App() {
     setAnimatedGridSelectedNodeId(node.id)
   }
 
+  const handleHexagonalNodeClick: NodeMouseHandler = (_, node) => {
+    if (scenarioId !== 'hexagonal') {
+      return
+    }
+
+    setHexagonalSelectedNodeId(node.id)
+  }
+
   return (
     <main className="app-shell">
       <header className="app-header">
@@ -501,7 +546,8 @@ function App() {
         {scenarioId === 'auto-layout' ||
         scenarioId === 'static' ||
         scenarioId === 'grid' ||
-        scenarioId === 'animated-grid' ? (
+        scenarioId === 'animated-grid' ||
+        scenarioId === 'hexagonal' ? (
           <label className="tension-control" htmlFor="layout-tension">
             <span>Tension</span>
             <input
@@ -542,6 +588,7 @@ function App() {
           staticSelectedNodeId={staticSelectedNodeId}
           gridSelectedNodeId={gridSelectedNodeId}
           animatedGridSelectedNodeId={animatedGridSelectedNodeId}
+          hexagonalSelectedNodeId={hexagonalSelectedNodeId}
           onNodeClick={
             scenarioId === 'auto-layout'
               ? handleAutoLayoutNodeClick
@@ -551,6 +598,8 @@ function App() {
                   ? handleGridNodeClick
                   : scenarioId === 'animated-grid'
                     ? handleAnimatedGridNodeClick
+                    : scenarioId === 'hexagonal'
+                      ? handleHexagonalNodeClick
               : undefined
           }
         />
